@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: mi_postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: los_pibbles_movies
+      POSTGRES_DB: mi_aplicacion
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d mi_aplicacion"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:9.8
+    container_name: mi_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: los_pibbles@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+  pgadmin_data:
