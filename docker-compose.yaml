@@ -1,37 +1,35 @@
 services:
-  postgres:
-    image: postgres:17
-    container_name: mi_postgres
+  mysql:
+    image: mysql:8.1
+    container_name: mi_mysql
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: los_pibbles_movies
-      POSTGRES_DB: mi_aplicacion
+      MYSQL_ROOT_PASSWORD: los_pibbles_movies
+      MYSQL_DATABASE: mi_aplicacion
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: los_pibbles_movies
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d mi_aplicacion"]
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -plos_pibbles_movies"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  pgadmin:
-    image: dpage/pgadmin4:9.8
-    container_name: mi_pgadmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: mi_phpmyadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: los_pibbles@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+      PMA_HOST: mysql
+      PMA_USER: admin
+      PMA_PASSWORD: los_pibbles_movies
     ports:
-      - "5050:80"
+      - "8080:80"
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
 
 volumes:
-  postgres_data:
-  pgadmin_data:
+  mysql_data:
