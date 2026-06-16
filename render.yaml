@@ -1,0 +1,6 @@
+services:
+  - type: docker-compose
+    name: los-pibbles-movies
+    repo: https://github.com/waryduchess/los_pibbles_movies_backend
+    branch: develop
+    dockerComposePath: ./docker-compose.yaml
