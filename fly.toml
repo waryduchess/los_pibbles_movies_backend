@@ -1,0 +1,16 @@
+app = "los-pibbles-movies-db"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[mounts]
+  source = "mysql_data"
+  destination = "/var/lib/mysql"
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 3306
+
+  [[services.ports]]
+    port = 3306
